@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 function LoginForm() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [message, setMessage] = useState('');
@@ -24,6 +25,7 @@ function LoginForm() {
       // });
 
       if (true) {
+        localStorage.setItem("userData", JSON.stringify(formData))
         setMessage('Login successful!');
         // Redirect to another page or perform other actions here
         navigate('/moviehome');
@@ -38,6 +40,7 @@ function LoginForm() {
 
   return (
     <div>
+      
       <form onSubmit={handleSubmit}>
         <label htmlFor="username">Username:</label>
         <input

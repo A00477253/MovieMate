@@ -1,0 +1,28 @@
+.header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    background-color: black;
+    color: white;
+  }
+  
+  .header__logo {
+    margin-right: 20px;
+  }
+  
+  .header__logo img {
+    width: 200px;
+    height: auto;
+  }
+  
+  .header__link {
+    margin-right: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 25px;
+  }
+  
+  /* Additional styling for Register and Login links if needed */
+  

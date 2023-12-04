@@ -1,17 +1,36 @@
-.movie-grid {
+/* Common styles for form elements */
+.form-element {
+    margin-bottom: 16px;
+  }
+  
+  /* Movie Grid */
+  .movie-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
-   }
-   
-   .movie-card {
+  }
+  
+  /* Movie Card */
+  .movie-card {
     background-color: #f9f9f9;
     padding: 20px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-   }
-   
-   .movie-card img {
+  }
+  
+  .movie-card img {
     width: 100%;
     height: auto;
-   }
+  }
+  
+  /* Movie Filters Container */
+  .movie-filters-container {
+    display: flex;
+    width: 50%;
+  }
+  
+  /* Filter Dropdown */
+  .filter-dropdown {
+    width: 33%;
+  }
+  
