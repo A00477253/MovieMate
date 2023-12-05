@@ -13,6 +13,7 @@ import AddActor from './component/header/Actor/AddActor';
 import DeleteActor from './component/header/Actor/DeleteActor';
 import AddGenre from './component/header/Genre/AddGenre';
 import DeleteGenre from './component/header/Genre/DeleteGenre';
+import MovieDetails from './movieDetails/movieDetails';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function AppContent() {
         <Route path="/deleteActor" element={<DeleteActor/>}/>
         <Route path="/addGenre" element={<AddGenre/>}/>
         <Route path="/deleteGenre" element={<DeleteGenre/>}/>
+        <Route path="/movie/:id" element={<MovieDetails />} />
 
         
 

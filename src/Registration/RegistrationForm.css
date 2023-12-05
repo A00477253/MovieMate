@@ -52,3 +52,9 @@ button {
 button:hover {
   background-color: #45a049;
 }
+
+.registration-page-img {
+  display: block;
+  height: 100px;
+  width: 100px;
+}

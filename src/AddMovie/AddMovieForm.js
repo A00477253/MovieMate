@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './AddMovieForm.css';
 import { useNavigate } from 'react-router-dom';
+import { Checkbox } from '@mui/material';
 
 const AddMovieForm = ({ onAddMovie }) => {
   const navigate = useNavigate();
@@ -231,9 +232,7 @@ const handleFormSubmit = async (e) => {
 
         <label>
           Promote Movie ($1000):
-          <input
-            type="checkbox"
-            name="promoteMovie"
+          <Checkbox
             checked={promoteMovie}
             onChange={handleCheckboxChange}
           />

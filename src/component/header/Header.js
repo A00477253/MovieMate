@@ -7,10 +7,16 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MovieIcon from '@mui/icons-material/Movie';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import PersonAddDisabledIcon from '@mui/icons-material/PersonAddDisabled';
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Button, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Movie } from "@mui/icons-material";
+
+const RESTRICT_PATHS = [
+    '/Login',
+    '/Register',
+    '/'
+]
 
 const Header = ({ pathVal }) => {
     const navigate = useNavigate();
@@ -50,14 +56,15 @@ const Header = ({ pathVal }) => {
     const userObject = JSON.parse(localStorage.getItem("userData"));
     return (
         <div className="header">
-            {userObject && pathValue === '/moviehome' && (
+            <div>
+            {(userObject && !RESTRICT_PATHS.includes(pathValue)) && (
                 <MenuIcon onClick={() => setOpenSideNav(true)} />
             )}
             <Drawer
                 anchor="left"
                 open={openSideNav}
                 onClose={() => setOpenSideNav(false)}
-            >
+        >
                 <List>
                     <ListItem disablePadding>
                         <ListItemButton onClick={() => logoutUser()}>
@@ -128,11 +135,16 @@ const Header = ({ pathVal }) => {
             <Link to="/" className="header__logo">
                 <img src={process.env.PUBLIC_URL + '/moviemate.png'} alt="MovieMate Logo" />
             </Link>
+            </div>
             {(!userObject && (pathValue !== '/login' && pathValue !== '/register')) && (
-                <>
-                    <Link to="/Register" className="header__link" style={{ textDecoration: "none" }}> <span>Register</span></Link>
-                    <Link to="/Login" className="header__link" style={{ textDecoration: "none" }}><span>Login</span></Link>
-                </>
+                <div className="header-login-container">
+                    <Button className="header-login-btns">
+                        <Link to="/Register" className="header__link" style={{ textDecoration: "none" }}> <span>Register</span></Link>
+                    </Button>
+                    <Button>
+                        <Link to="/Login" className="header__link" style={{ textDecoration: "none" }}><span>Login</span></Link>
+                    </Button>
+                </div>
             )}
 
         </div>

@@ -109,6 +109,8 @@ const RegistrationForm = ({ onRegistration }) => {
   };
 
   return (
+    <div>
+      {/* <image className="registration-page-img" src={"https://live.staticflickr.com/65535/53365403390_53c39c1ede_o_d.jpg"} /> */}
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="firstName">First Name:</label>
@@ -248,6 +250,7 @@ const RegistrationForm = ({ onRegistration }) => {
      
       <button type="submit">Submit</button>
     </form>
+    </div>
   );
 };
 
