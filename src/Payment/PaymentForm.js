@@ -4,26 +4,27 @@ import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 
-//Alert box pending on this page 
-
-
-
-
 
 
 const PaymentForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('userData'));
+  
+  const userId = user.id;
+  console.log("Uder date is ",userId);
 
   const Movie = location.state.formData;
   
-   const [name, setName] = useState('');
+  const [name, setName] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
   const [cardType, setCardType] = useState('');
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [showFailureAlert, setShowFailureAlert] = useState(false);
+  const [isExpiryValid, setIsExpiryValid] = useState(true);
+
+  const [cvvError, setCvvError] = useState(false)
+  const cvvRegex = /^[0-9]{3}$/;
 
   const detectCardType = number => {
     const re = {
@@ -48,16 +49,55 @@ const PaymentForm = () => {
     setCardNumber(number);
     setCardType(detectCardType(number));
   };
+  const handleCvvChange = (e) => {
+    const value = e.target.value;
 
+    console.log(cvvRegex.test(value))
+    if (value.length > 2) {
+      if (cvvRegex.test(value) || value === '') {
+        setCvv(value);
+        setCvvError(false)
+      } else if (!cvvRegex.test(value)) {
+        setCvvError(true)
+      }
+    } else {
+      setCvv(value)
+    }
+  };
+
+
+  const handleExpiryChange = (e) => {
+    const inputValue = e.target.value;
+    setExpiry(inputValue);
+
+    // Simple regex to validate MM/YY format
+    const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+    const isValidFormat = expiryRegex.test(inputValue);
+
+    if (isValidFormat) {
+      const [month, year] = inputValue.split('/');
+
+      const expiryDate = new Date(`20${year}`, month - 1);
+      setIsExpiryValid(expiryDate > new Date());
+    } else {
+      setIsExpiryValid(false);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!name || !cardNumber || !expiry || !cvv || !cardType || !isExpiryValid || cvvError) {
+      console.error('Invalid form data. Please check all fields.');
+      return;
+    }
     const paymentPayload = {
       name,
       cardNumber,
       expiry,
       cvv,
       cardType,
-      Movie
+      Movie,
+      userId
     };
     console.log('Form submitted', JSON.stringify(paymentPayload));
     try {
@@ -73,33 +113,37 @@ const PaymentForm = () => {
       if (response.ok) {
         const responseData = await response.json();
         console.log('Payment successful:');
-        showSuccessAlert(true);
         setTimeout(() => {
-          showSuccessAlert(false);
           navigate('/moviehome'); // Navigate to moviehome.js
         }, 2000);
       } else {
         console.error('Payment failed:', response.statusText);
-        setShowFailureAlert(true);
         setTimeout(() => {
-          setShowFailureAlert(false);
+          
           navigate('/moviehome'); // Navigate to moviehome.js
         }, 2000); 
       }
     } catch (error) {
       console.error('Error during payment:', error.message);
-      setShowFailureAlert(true);
         setTimeout(() => {
-          setShowFailureAlert(false);
           navigate('/moviehome'); // Navigate to moviehome.js
         }, 2000); 
     }
   };
+  const isFormValid =
+  name &&
+  cardNumber &&
+  expiry &&
+  cvv &&
+  cardType &&
+  isExpiryValid &&
+  !cvvError;
+  
 
   return (
     <div className="payment-form">
-      <h2>Payment Details</h2>
-      <form onSubmit={handleSubmit}>
+      <h2 style={{color: 'white'}}>Payment Details</h2>
+      <form onSubmit={handleSubmit} style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', color: 'black'}}>
         <label htmlFor="name">Name on Card</label>
         <input id="name" type="text" value={name} onChange={e => setName(e.target.value)} />
         
@@ -110,16 +154,27 @@ const PaymentForm = () => {
         <div className="expiry-cvv">
           <div>
             <label htmlFor="expiry">Valid Through</label>
-            <input id="expiry" type="text" value={expiry} onChange={e => setExpiry(e.target.value)} placeholder="MM/YY" />
+            <input
+              id="expiry"
+              type="text"
+              value={expiry}
+              onChange={handleExpiryChange}
+              placeholder="MM/YY"
+              style={{ borderColor: isExpiryValid ? 'initial' : 'red' }}
+            />
+            {!isExpiryValid && <p style={{ color: 'red' }}>Please enter a valid and future expiry date (MM/YY).</p>}
           </div>
           
           <div>
             <label htmlFor="cvv">CVV</label>
-            <input id="cvv" type="text" value={cvv} onChange={e => setCvv(e.target.value)} />
+            <input id="cvv" type="text" value={cvv} onChange={handleCvvChange} maxLength="3" />
+            {cvvError && (<span style={{color: 'red'}}>Please enter correct CVV</span>)}
           </div>
         </div>
         
-        <button type="submit">Pay</button>
+        <button type="submit" disabled={!isFormValid}>
+          Pay
+        </button>
        
       </form>
       

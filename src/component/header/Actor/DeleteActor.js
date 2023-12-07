@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DeleteActor.css';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const DeleteActor = () => {
   const navigate = useNavigate();
@@ -20,6 +22,25 @@ const DeleteActor = () => {
     const actor = actors.find(actor => actor.id === actorId);
     setSelectedActor(actor);
   };
+  const user = JSON.parse(localStorage.getItem('userData'));
+  useEffect(() => {
+    if (!user ) {
+        Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized Access',
+        text: 'You need to log in to access this page.',
+      });
+      navigate("/login");
+    }
+    else if(user.userType!="admin"){
+        Swal.fire({
+          icon: 'error',
+          title: 'Unauthorized Access',
+          text: "You don't have necessary permission to access this page",
+        });
+        navigate("/moviehome");
+    }
+  }, [user, navigate]);
 
   const handleDelete = () => {
     if (!selectedActor) return;
@@ -33,9 +54,22 @@ const DeleteActor = () => {
       .then(response => {
         if (response.ok) {
           console.log('Actor deleted successfully');
-          navigate('/movieHome'); // Navigate to /movieHome
+          Swal.fire({
+            icon: 'success',
+            title: 'Actor deleted successfully!',
+            text: 'You will be redirected to Movie Home.',
+           
+          });
+          navigate('/moviehome');
         } else {
           console.error('Error deleting actor');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error deleting actor',
+            text: 'An error occurred while adding the actor. You will be redirected to Movie Home.',
+            
+          });
+          navigate('/moviehome');
         }
       })
       .catch(error => console.error('Error:', error));

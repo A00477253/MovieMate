@@ -9,7 +9,7 @@ body {
   .container {
     max-width: 600px;
     margin: 50px auto;
-    background-color: #222; /* Dark gray background for the form */
+    background-color: rgb(192, 181, 181); /* Dark gray background for the form */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);

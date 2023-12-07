@@ -1,13 +1,16 @@
 .payment-form {
+  width: 100%;
+  height: 100vh;
     background-image: url('/public/payment.jpg');
     background-size: cover;
     background-repeat: no-repeat; 
     padding: 20px;
     border-radius: 8px;
-    max-width: 300px;
+    /* max-width: 300px; */
     margin: auto;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 10px;
   }
   .error-message {

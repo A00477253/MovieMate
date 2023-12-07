@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './AddMovieForm.css';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from '@mui/material';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const AddMovieForm = ({ onAddMovie }) => {
   const navigate = useNavigate();
@@ -77,7 +79,7 @@ const AddMovieForm = ({ onAddMovie }) => {
         setNewMovie({
           ...newMovie,
           genre: value,
-          genreId: selectedGenre.id, // Use the genre ID instead of the name
+          genreId: selectedGenre.id, 
         });
       }
     } else {
@@ -88,57 +90,70 @@ const AddMovieForm = ({ onAddMovie }) => {
     }
   };
 
-const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const formData = new FormData();
-      formData.append('name', newMovie.title); 
-      formData.append('synopsis', newMovie.synopsis);
-      formData.append('trailerUrl', newMovie.trailer);
-      formData.append('image', newMovie.poster);
-      formData.append('promoteMovie', promoteMovie);
-      formData.append('actorId', newMovie.actorId);
-      formData.append('genreId', newMovie.genreId);
-      console.log(formData);
-      console.log(formData);
-      const formDataObject = {};
-      formData.forEach((value, key) => {
-        formDataObject[key] = value;
-      });
-
-      console.log(JSON.stringify(formDataObject));
-
+      const requestBody = {
+        title: newMovie.title,
+        synopsis: newMovie.synopsis,
+        trailer: newMovie.trailer,
+        poster: newMovie.poster,
+        actorID: newMovie.actorId,
+        genreID: newMovie.genreId,
+        releaseDate: newMovie.releaseDate,
+        sponsored: promoteMovie.toString(), 
+      };
+  
+      console.log(JSON.stringify(requestBody));
+  
       if (!promoteMovie) {
-
-        const response = await fetch('YOUR_ADD_MOVIE_API_ENDPOINT', {
+        const response = await fetch('https://moviemate.azurewebsites.net/api/Movie', {
           method: 'POST',
-          body: formData,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
         });
-
+  
         if (response.ok) {
           console.log('Movie added successfully');
           setNewMovie({
-            name: '',
+            title: '',
             synopsis: '',
-            image: null,
-            trailerUrl: '',
+            poster: null,
+            trailer: '',
           });
-          setPromoteMovie(false); 
+          setPromoteMovie(false);
+          Swal.fire({
+            icon: 'success',
+            title: 'Movie Added successfully',
+            text: 'Movie Added successfully navigating to the Home page',
+          });
+          navigate("/moviehome");
         } else {
           console.error('Error adding movie:', response.statusText);
+          Swal.fire({
+            icon: 'failure',
+            title: 'failed adding moving',
+            text: 'OOPS there were some error in adding movie , navigating to the Home page',
+          });
+          navigate("/moviehome");
         }
       } else {
-
-        navigate('/payment', { state: { formData: Object.fromEntries(formData.entries()) } });
+        navigate('/payment', { state: { formData: requestBody } });
       }
-
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error adding movie:', error.message);
-    }};
-
-  return (
+      Swal.fire({
+        icon: 'failure',
+        title: 'failed adding moving',
+        text: 'OOPS there were some error in adding movie , navigating to the Home page',
+      });
+      navigate("/moviehome");
+    }
+  };
+    return (
     <div className="add-movie-form">
       <h3>Add a New Movie</h3>
       <form onSubmit={handleFormSubmit}>
@@ -237,6 +252,7 @@ const handleFormSubmit = async (e) => {
             onChange={handleCheckboxChange}
           />
         </label>
+        
 
         <button type="submit">Add Movie</button>
       </form>

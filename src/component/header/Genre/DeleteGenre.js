@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DeleteGenre.css';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const DeleteGenre = () => {
   const navigate = useNavigate();
@@ -9,7 +11,6 @@ const DeleteGenre = () => {
   const [selectedGenre, setSelectedGenre] = useState(null);
 
   useEffect(() => {
-    // Uncomment this section for API integration
     fetch('https://moviemate.azurewebsites.net/api/Genre')
       .then(response => response.json())
       .then(data => setGenres(data))
@@ -21,10 +22,29 @@ const DeleteGenre = () => {
     setSelectedGenre(genre);
   };
 
+  const user = JSON.parse(localStorage.getItem('userData'));
+  useEffect(() => {
+    if (!user ) {
+        Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized Access',
+        text: 'You need to log in to access this page.',
+      });
+      navigate("/login");
+    }
+    else if(user.userType!=="admin"){
+        Swal.fire({
+          icon: 'error',
+          title: 'Unauthorized Access',
+          text: "You don't have necessary permission to access this page",
+        });
+        navigate("/moviehome");
+    }
+  }, [user, navigate]);
+
   const handleDelete = () => {
     if (!selectedGenre) return;
 
-    // Uncomment this section for API integration
     fetch(`https://moviemate.azurewebsites.net/api/Genre/${selectedGenre.id}`, {
       method: 'DELETE',
       headers: {
@@ -34,9 +54,22 @@ const DeleteGenre = () => {
       .then(response => {
         if (response.ok) {
           console.log('Genre deleted successfully');
-          navigate('/movieHome'); // Navigate to /movieHome
+          Swal.fire({
+            icon: 'success',
+            title: 'Genre deleted successfully!',
+            text: 'You will be redirected to Movie Home.',
+           
+          });
+          navigate('/moviehome');
         } else {
           console.error('Error deleting genre');
+          Swal.fire({
+            icon: 'success',
+            title: 'Error in deleting Genre',
+            text: 'You will be redirected to Movie Home.',
+           
+          });
+          navigate('/moviehome');
         }
       })
       .catch(error => console.error('Error:', error));

@@ -10,7 +10,8 @@ import PersonAddDisabledIcon from '@mui/icons-material/PersonAddDisabled';
 import { Button, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Movie } from "@mui/icons-material";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 
 const RESTRICT_PATHS = [
     '/Login',
@@ -45,6 +46,9 @@ const Header = ({ pathVal }) => {
     const deleteGenre = () => {
         navigate('/deleteGenre')
     }
+    const ViewWatchList=()=>{
+        navigate('/watchList');
+    }
 
 
     useEffect(() => {
@@ -74,7 +78,16 @@ const Header = ({ pathVal }) => {
                             <ListItemText primary="Logout" />
                         </ListItemButton>
                     </ListItem>
-                    {userObject?.username === "producer" && (
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => ViewWatchList()}>
+                            <ListItemIcon>
+                                <FavoriteIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="WatchList" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    {userObject?.userType === "producer" && (
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => addMovie()}>
                                 <ListItemIcon>
@@ -84,7 +97,8 @@ const Header = ({ pathVal }) => {
                             </ListItemButton>
                         </ListItem>
                     )}
-                    {userObject?.username === "admin" && (
+                    
+                    {userObject?.userType === "admin" && (
                         <>
                             <ListItem disablePadding>
                                 <ListItemButton onClick={() => addMovie()}>

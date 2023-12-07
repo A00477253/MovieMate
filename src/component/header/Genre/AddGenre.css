@@ -1,18 +1,24 @@
-.container {
+.genre-container {
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    background-color: rgb(192, 181, 181);
   }
-  
-  label {
+  body{
+    background-color: black;
+  }
+.genre-container label {
+    color:black !important;
+}  
+  .label {
     display: block;
     margin-bottom: 8px;
   }
   
-  input,
-  textarea {
+.input,
+.textarea {
     width: 100%;
     padding: 8px;
     margin-bottom: 16px;
@@ -20,7 +26,7 @@
     border-radius: 4px;
   }
   
-  button {
+ .button {
     background-color: #3498db;
     color: #fff;
     padding: 10px 15px;
@@ -29,7 +35,7 @@
     cursor: pointer;
   }
   
-  button:hover {
+.button:hover {
     background-color: #2980b9;
   }
   

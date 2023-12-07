@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import './AddActor.css';
+import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import { useNavigate } from 'react-router-dom';
 
 const AddActor = () => {
+  const navigate = useNavigate();
   const [actorData, setActorData] = useState({
     name: '',
     birthDate: '',
@@ -9,38 +12,94 @@ const AddActor = () => {
     picture: ''
   });
 
-  const handleChange = (e) => {
-    setActorData({ ...actorData, [e.target.name]: e.target.value });
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    fetch('https://moviemate.azurewebsites.net/api/Actor', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(actorData)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setActorData({
+      ...actorData,
+      [name]: value,
+    });
+  };
+  const user = JSON.parse(localStorage.getItem('userData'));
+  useEffect(() => {
+    if (!user ) {
+        Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized Access',
+        text: 'You need to log in to access this page.',
       });
+      navigate("/login");
+    }
+    else if(user.userType!=="admin"){
+        Swal.fire({
+          icon: 'error',
+          title: 'Unauthorized Access',
+          text: "You don't have necessary permission to access this page",
+        });
+        navigate("/moviehome");
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("https://moviemate.azurewebsites.net/api/Actor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(actorData),
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("Actor added successfully:", responseData);
+        Swal.fire({
+          icon: 'success',
+          title: 'Actor added successfully!',
+          text: 'You will be redirected to Movie Home.',
+         
+        });
+        navigate('/moviehome');
+      } else {
+        console.error("Adding actor failed:", response.statusText);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error adding actor',
+          text: 'An error occurred while adding the actor. You will be redirected to Movie Home.',
+          
+        });
+        navigate('/moviehome');
+      }
+    } catch (error) {
+      console.error("Error during actor addition:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error adding actor',
+        text: 'An error occurred while adding the actor. You will be redirected to Movie Home.',
+        
+      });
+      navigate('/moviehome');
+      
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="container">
       <h1>Add Actor</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <label htmlFor="name">Name:</label>
         <input
           type="text"
           id="name"
           name="name"
           value={actorData.name}
-          onChange={handleChange}
+          onChange={handleInputChange}
           required
         />
 
@@ -50,7 +109,7 @@ const AddActor = () => {
           id="birthDate"
           name="birthDate"
           value={actorData.birthDate}
-          onChange={handleChange}
+          onChange={handleInputChange}
           required
         />
 
@@ -59,7 +118,7 @@ const AddActor = () => {
           id="biography"
           name="biography"
           value={actorData.biography}
-          onChange={handleChange}
+          onChange={handleInputChange}
           required
         ></textarea>
 
@@ -69,12 +128,12 @@ const AddActor = () => {
           id="picture"
           name="picture"
           value={actorData.picture}
-          onChange={handleChange}
+          onChange={handleInputChange}
           required
         />
 
-        <button type="button" onClick={handleSubmit}>
-          Submit
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
       </form>
     </div>

@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import './LoginForm.css';
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBInput,
+} from 'mdb-react-ui-kit';
 import { useNavigate } from 'react-router-dom';
-
 
 function LoginForm() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -16,18 +24,18 @@ function LoginForm() {
     e.preventDefault();
 
     try {
-      // const response = await fetch('your_api_endpoint_here', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
+      const response = await fetch('https://moviemate.azurewebsites.net/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      if (true) {
-        localStorage.setItem("userData", JSON.stringify(formData))
+      if (response.ok) {
+        const responseData = await response.json();
+        localStorage.setItem("userData", JSON.stringify(responseData));
         setMessage('Login successful!');
-        // Redirect to another page or perform other actions here
         navigate('/moviehome');
       } else {
         setMessage('Login failed. Please check your credentials.');
@@ -38,36 +46,62 @@ function LoginForm() {
     }
   };
 
+  const handleRegisterClick = () => {
+    navigate('/Register');
+  };
+
   return (
-    <div>
-      
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username:</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <br />
+    <div style={{ backgroundColor: 'black', minHeight: '100vh', color: 'white' }}>
+      <MDBContainer fluid>
+        <MDBRow>
+          <MDBCol sm='6'>
+            <div className='d-flex flex-column justify-content-center h-custom-2 w-75 pt-4'>
+              <h3 className="fw-normal mb-3 ps-5 pb-3" style={{ letterSpacing: '1px' }}>Log in</h3>
 
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <br />
+              <MDBInput
+                wrapperClass='mb-4 mx-5 w-100'
+                label='Email address'
+                id='formControlLg'
+                type='email'
+                size='lg'
+                onChange={handleChange}
+                name='username'
+                labelClass='text-light'
+                inputClass='text-light'
+                style={{ color: 'white' }}
+              />
+              <MDBInput
+                wrapperClass='mb-4 mx-5 w-100'
+                label='Password'
+                id='formControlLg'
+                type='password'
+                size='lg'
+                onChange={handleChange}
+                name='password'
+                labelClass='text-light'
+                inputClass='text-light'
+                style={{ color: 'white' }}
+                
+              />
 
-        <input type="submit" value="Login" />
-      </form>
+              <MDBBtn className='mb-4 px-5 mx-5 w-100' color='info' size='lg' onClick={handleSubmit}>
+                Login
+              </MDBBtn>
+              <div className='ms-5 mb-2 text-light'>{message}</div>
+              <p className='ms-5'>
+                Don't have an account?{' '}
+                <a href='#!' className='link-info' onClick={handleRegisterClick}>
+                  Register here
+                </a>
+              </p>
+            </div>
+          </MDBCol>
 
-      <div>{message}</div>
+          <MDBCol sm='6' className='d-none d-sm-block px-0'>
+            <img src={process.env.PUBLIC_URL + '/login.jpg'} alt='Login' className='w-100' style={{ objectFit: 'cover', objectPosition: 'left' }} />
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
     </div>
   );
 }

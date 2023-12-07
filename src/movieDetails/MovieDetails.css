@@ -1,17 +1,17 @@
-/* MovieDetails.css */
 
 .movie-details-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
   }
   
-  .movie-card {
+  .movie-details-movie-card {
     display: flex;
     align-items: flex-start;
-    width: 80%;
-    margin-top: 20px;
-    border: 1px solid #ddd;
+    /* width: 80%;
+    margin-top: 20px; */
+    /* border: 1px solid #ddd; */
     border-radius: 8px;
     overflow: hidden;
   }
@@ -28,7 +28,9 @@
   }
   
   .trailer-video {
-    margin-bottom: 20px;
+    height: 25vh; 
+    margin-bottom: 20px; 
+    width: 100%;
   }
   
   .average-rating {
@@ -56,4 +58,5 @@
     font-size: 18px;
     margin-top: 20px;
   }
+
   
