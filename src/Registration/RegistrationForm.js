@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import provincesData from './provinces.json'; // Adjust the path accordingly
+import provincesData from './provinces.json'; 
 import './RegistrationForm.css';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-import { colors } from '@mui/material';
 
 const RegistrationForm = ({ onRegistration }) => {
   const navigate = useNavigate();
@@ -138,10 +137,11 @@ const RegistrationForm = ({ onRegistration }) => {
           }
         } else {
           console.error('Registration failed:', response.statusText);
+          const errorResponse = await response.json();
           Swal.fire({
             icon: 'error',
             title: 'Registration failed',
-            text: 'An error occurred during registration. Please try again.',
+            text: `An error occurred during registration: ${errorResponse.message || 'Please try again.'}`,
           });
         }
       } catch (error) {

@@ -30,6 +30,13 @@ const Header = ({ pathVal }) => {
         localStorage.removeItem("userData");
         navigate('/')
     }
+    const determineLogoLink = () => {
+        if (userObject) {
+          return '/moviehome';
+        } else {
+          return '/';
+        }
+      };
 
     const addMovie = () => {
         navigate('/addMovie')
@@ -146,7 +153,8 @@ const Header = ({ pathVal }) => {
 
 
             </Drawer>
-            <Link to="/" className="header__logo">
+            
+            <Link to= {determineLogoLink()} className="header__logo">
                 <img src={process.env.PUBLIC_URL + '/moviemate.png'} alt="MovieMate Logo" />
             </Link>
             </div>
