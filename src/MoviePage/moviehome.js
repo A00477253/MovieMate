@@ -82,7 +82,7 @@ const navigate=useNavigate();
   useEffect(() => {
     console.log(movies, filters)
     if (filters.actors === '' && filters.genre === '') {
-      setFilteredMovies(movies.filter(movie => movie.sponsored=="true"));
+      setFilteredMovies(movies.filter(movie => movie.sponsored==="true"));
     } else if (filters.actors !== '' && filters.genre !== '') {
       setFilteredMovies(movies.filter((movie) => movie.actor.name === filters.actors && movie.genre.name === filters.genre));
     } else if (filters.actors !== '') {

@@ -111,7 +111,6 @@ const PaymentForm = () => {
       });
   
       if (response.ok) {
-        const responseData = await response.json();
         console.log('Payment successful:');
         setTimeout(() => {
           navigate('/moviehome'); // Navigate to moviehome.js

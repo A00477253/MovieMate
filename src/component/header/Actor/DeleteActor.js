@@ -32,7 +32,7 @@ const DeleteActor = () => {
       });
       navigate("/login");
     }
-    else if(user.userType!="admin"){
+    else if(user.userType!=="admin"){
         Swal.fire({
           icon: 'error',
           title: 'Unauthorized Access',
@@ -101,7 +101,7 @@ const DeleteActor = () => {
           <h2>{selectedActor.name}</h2>
           <p>Birth Date: {selectedActor.birthDate}</p>
           <p>Biography: {selectedActor.biography}</p>
-          <img src={selectedActor.picture} alt={`${selectedActor.name} Picture`} />
+          <img src={selectedActor.picture} alt={`${selectedActor.name} Picturactor`} />
           <button onClick={handleDelete}>Delete Actor</button>
         </div>
       )}

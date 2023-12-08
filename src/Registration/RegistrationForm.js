@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import provincesData from './provinces.json'; 
+import provincesData from './provinces.json'; // Adjust the path accordingly
 import './RegistrationForm.css';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { useCallback } from 'react';
 
 const RegistrationForm = ({ onRegistration }) => {
   const navigate = useNavigate();
@@ -24,11 +25,7 @@ const RegistrationForm = ({ onRegistration }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    validateForm();
-  }, [formData, isSubmitting]);
-
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const newErrors = {};
 
     ['firstName', 'lastName'].forEach((field) => {
@@ -37,7 +34,7 @@ const RegistrationForm = ({ onRegistration }) => {
       }
     });
 
-    const invalidCharacters = /[;:!@#$%^*+?\/<>1234567890]/;
+    const invalidCharacters = /[;:!@#$%^*+?/<>1234567890]/;
     ['firstName', 'lastName'].forEach((field) => {
       if (invalidCharacters.test(formData[field])) {
         newErrors[field] = 'Invalid characters are not allowed';
@@ -70,7 +67,13 @@ const RegistrationForm = ({ onRegistration }) => {
     }
 
     setErrors(newErrors);
-  };
+  },[formData]);
+
+  useEffect(() => {
+    validateForm();
+  }, [formData, isSubmitting,validateForm]);
+
+ 
 
   const isValidCanadianPostalCode = (postalCode) => {
     const canadianPostalCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
